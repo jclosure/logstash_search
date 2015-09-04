@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+gem 'nokogiri'
+gem 'rack'
+gem 'rspec', :require => 'spec'
+gem 'stretcher'
+gem 'sinatra'
+gem 'slim'
+gem 'faraday', '0.8.9'
