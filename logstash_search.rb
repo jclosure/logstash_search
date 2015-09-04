@@ -1,10 +1,14 @@
 # coding: utf-8
+require 'yaml'
 require 'slim'
 require 'sinatra'
 require 'stretcher'
 
+# read in config from yaml file
+config = YAML::load(IO.read('config.yml'))
+
 configure do
-  ES = Stretcher::Server.new('http://esbanl01.amd.com:9200')
+  ES = Stretcher::Server.new(config['dev']['url'])
 end
 
 class Logstash
@@ -16,7 +20,7 @@ class Logstash
 end
 
 get "/" do
-  redirect "/Exception"
+  redirect "/*"
 end
 
 get "/:word" do
