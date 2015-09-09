@@ -1,0 +1,27 @@
+dev:
+  name: "development"
+  url : "http://localhost:9200"
+  index: "twitter"
+  search: "hi"
+  date_field: "post_date"
+  to: "joel.holder@amd.com"
+  from: "es-notifier@amd.com"
+  smtp_server: "txsmtp.amd.com"
+qa:
+  name: "QA"
+  url : "http://esbanl01-qa.amd.com:9200"
+  index: "logstash-*"
+  search: "exception"
+  date_field: "@timestamp"
+  to: "joel.holder@amd.com"
+  from: "es-notifier@amd.com"
+  smtp_server: "txsmtp.amd.com"  
+prod:
+  name: production
+  url : "http://esbanl01.amd.com:9200"  
+  index: "logstash-*"
+  search: "exception"
+  date_field: "@timestamp"
+  to: "joel.holder@amd.com"
+  from: "es-notifier@amd.com"
+  smtp_server: "txsmtp.amd.com"

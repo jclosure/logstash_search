@@ -1,6 +1,9 @@
 dev:
-  url: "http://localhost:9200"
+  name: "development"
+  url : "http://localhost:9200"
 test:
-  url: "http://localhost:9200"
+  name: "QA"
+  url : "http://esbanl01-qa.amd.com:9200"
 prod:
-  url: "http://localhost:9200"  
+  name: production
+  url : "http://localhost:9200"  
