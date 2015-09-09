@@ -1,10 +1,10 @@
 # coding: utf-8
 require 'yaml'
-require 'slim'
-require 'sinatra'
-require 'stretcher'
-require 'thin'
-require 'pony'
+
+
+require 'bundler/setup'
+Bundler.require(:default,:web) 
+
 
 
 # read in config from yaml file

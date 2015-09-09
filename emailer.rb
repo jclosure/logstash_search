@@ -1,20 +1,22 @@
 # coding: utf-8
+require 'rubygems'
+
+require 'bundler/setup'
+Bundler.require(:default) 
+
 require 'yaml'
-require 'slim'
-require 'stretcher'
-require 'pony'
-require 'pry'
 require 'date'
 require 'time'
 
 environment = ARGV[0] || "dev"
+hours =  (ARGV[1] || 1).to_f
 
 # read in config from yaml file
 config = YAML::load(IO.read('config_emailer.yml'))[environment]
 
 $date_field_name = config['date_field']
 $now = DateTime.now
-$starting = ($now - (1.0/24)).to_time.iso8601.to_s #ref: see notes
+$starting = ($now - (hours/24)).to_time.iso8601.to_s #ref: see notes
 $ending = $now.to_time.iso8601.to_s
 
 

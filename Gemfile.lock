@@ -1,7 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    daemons (1.2.3)
     diff-lcs (1.2.5)
+    eventmachine (1.0.8)
     excon (0.45.4)
     faraday (0.8.9)
       multipart-post (~> 1.2.0)
@@ -11,11 +13,13 @@ GEM
       faraday_middleware
       multi_json
     hashie (3.4.2)
-    mini_portile (0.6.2)
+    mail (2.6.3)
+      mime-types (>= 1.16, < 3)
+    mime-types (2.6.1)
     multi_json (1.11.2)
     multipart-post (1.2.0)
-    nokogiri (1.6.6.2-x64-mingw32)
-      mini_portile (~> 0.6.0)
+    pony (1.11)
+      mail (>= 2.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -47,19 +51,25 @@ GEM
       hashie (>= 1.2.0)
       multi_json (>= 1.0)
     temple (0.7.6)
+    thin (1.6.3)
+      daemons (~> 1.0, >= 1.0.9)
+      eventmachine (~> 1.0)
+      rack (~> 1.0)
     tilt (2.0.1)
 
 PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
+  bundler
   faraday (= 0.8.9)
-  nokogiri
+  pony
   rack
   rspec
   sinatra
   slim
   stretcher
+  thin
 
 BUNDLED WITH
    1.10.6
