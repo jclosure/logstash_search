@@ -4,14 +4,14 @@ group :default do
   gem 'bundler'
   gem 'rack'
   gem 'stretcher'
-
+  gem 'pry'
   gem 'slim'
   gem 'faraday', '0.8.9'
   gem 'pony'
-  gem 'thin'
 end
 
-group :web do  
+group :web do
+  gem 'thin'
   gem 'sinatra'
 end
 

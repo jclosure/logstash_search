@@ -5,7 +5,7 @@ dev:
   search: "hi"
   date_field: "post_date"
   to: "joel.holder@amd.com"
-  from: "es-notifier@amd.com"
+  from: "esbadmins@amd.com"
   smtp_server: "txsmtp.amd.com"
 qa:
   name: "QA"
@@ -14,14 +14,14 @@ qa:
   search: "exception"
   date_field: "@timestamp"
   to: "joel.holder@amd.com"
-  from: "es-notifier@amd.com"
+  from: "esbadmins@amd.com"
   smtp_server: "txsmtp.amd.com"  
 prod:
-  name: production
+  name: "production"
   url : "http://esbanl01.amd.com:9200"  
   index: "logstash-*"
   search: "exception"
   date_field: "@timestamp"
   to: "joel.holder@amd.com"
-  from: "es-notifier@amd.com"
+  from: "esbadmins@amd.com"
   smtp_server: "txsmtp.amd.com"

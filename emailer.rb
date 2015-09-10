@@ -8,6 +8,9 @@ require 'yaml'
 require 'date'
 require 'time'
 
+require_relative 'extensions'
+
+
 environment = ARGV[0] || "dev"
 hours =  (ARGV[1] || 1).to_f
 
@@ -118,8 +121,6 @@ entries.results.sort! do |a,b|
     end
   rescue => error
     puts "#{error.class} and #{error.message}"
-    # start a REPL session
-    #binding.pry
     1
   end
   
@@ -140,27 +141,38 @@ html
 )
 
 
+
+
+
+# GENERATE CSV
+data = entries.results.collect { |h| h.with("host","path","logdate","level","messagetext","category","contextId","thread","routeId", "breadcrumbId") || h }.to_hashed_csv
+
+
+
+
 # SEND EMAIL
-results = { params: params, entries: entries }
+if entries.total > 0
+  results = { params: params, entries: entries }
 
-html =  Slim::Template.new { contents }.render(results, results)
-
-
-Pony.mail :to => config['to'],
-          :from => config['from'],
-          :subject => "#{params[:word]} in #{environment}",
-          :html_body => html,
-          :attachments => {"#{params[:word]}.html" => html},
-          :via => :smtp,
-          :via_options => {
-            :address        => config['smtp_server'],
-            :port           => '25',
-            :enable_starttls_auto => false
-            #:user_name      => 'user',
-            #:password       => 'password',
-            #:authentication => :plain, # :plain, :login, :cram_md5, no auth by default
-            #:domain         => "amd.com" # the HELO domain provided by the client to the server
-          }
+  html =  Slim::Template.new { contents }.render(results, results)
 
 
+  Pony.mail :to => config['to'],
+            :from => config['from'],
+            :subject => "time period report: #{params[:word]} in #{environment}",
+            :html_body => html,
+            :attachments => {"#{params[:word]}.html" => html, "#{params[:word]}.csv" => data},
+            :via => :smtp,
+            :via_options => {
+              :address        => config['smtp_server'],
+              :port           => '25',
+              :enable_starttls_auto => false
+              #:user_name      => 'user',
+              #:password       => 'password',
+              #:authentication => :plain, # :plain, :login, :cram_md5, no auth by default
+              #:domain         => "amd.com" # the HELO domain provided by the client to the server
+            }
+end
 
+# start a REPL session
+#binding.pry
