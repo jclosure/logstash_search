@@ -22,12 +22,16 @@ end
 class Array
   def to_hashed_csv
     hashes = self
-    column_names = hashes.first.keys
-    s=CSV.generate do |csv|
-      csv << column_names
-      hashes.each do |x|
-        csv << x.values
+    if hashes.any?
+      column_names = hashes.first.keys
+      s=CSV.generate do |csv|
+        csv << column_names
+        hashes.each do |x|
+          csv << x.values
+        end
       end
+    else
+      ""
     end
   end
 end
