@@ -22,6 +22,9 @@ $now = DateTime.now
 $starting = ($now - (hours/24)).to_time.iso8601.to_s #ref: see notes
 $ending = $now.to_time.iso8601.to_s
 
+puts "start: #{$starting}"
+puts "end: #{$ending}"
+
 
 ES = Stretcher::Server.new(config['url'], {  
                              :read_timeout => 2000,
@@ -151,6 +154,7 @@ data = entries.results.collect { |h| h.with("host","path","logdate","level","mes
 
 
 # SEND EMAIL
+puts "found: #{entries.total} entries"
 if entries.total > 0
   results = { params: params, entries: entries }
 
@@ -161,7 +165,7 @@ if entries.total > 0
             :from => config['from'],
             :subject => "time period report: #{params[:word]} in #{environment}",
             :html_body => html,
-            :attachments => {"#{params[:word]}.html" => html, "#{params[:word]}.csv" => data},
+            :attachments => {"#{config['name']}.html" => html, "#{config['name']}.csv" => data},
             :via => :smtp,
             :via_options => {
               :address        => config['smtp_server'],
