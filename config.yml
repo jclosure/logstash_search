@@ -1,9 +1,34 @@
 dev:
   name: "development"
   url : "http://localhost:9200"
-test:
+  index: "twitter"
+  search: "bye"
+  date_field: "@timestamp"
+  to: "joel.holder@amd.com"
+  from: "esbadmins@amd.com"
+  smtp_server: "txsmtp.amd.com"
+  send: true
+qa:
   name: "QA"
   url : "http://esbanl01-qa.amd.com:9200"
+  index: "logstash-*"
+  search: 'message:"*exception*"'
+  date_field: "@timestamp"
+  to: "joel.holder@amd.com"
+  from: "esbadmins@amd.com"
+  smtp_server: "txsmtp.amd.com"
+  send: true
 prod:
-  name: production
-  url : "http://localhost:9200"  
+  name: "production"
+  url : "http://esbanl01.amd.com:9200"  
+  index: "logstash-2015.09.*"
+  search: 'message:"*exception*"
+           AND -message:"*This exception will be ignored*" 
+           AND -message:"*EventAdmin: Exception: java.lang.InterruptedException*" 
+           AND -message:"*leaving main loop due to null*"                        
+           AND -message:"*leaving main loop due to Socket closed*"'
+  date_field: "@timestamp"
+  to: "joel.holder@amd.com"
+  from: "esbadmins@amd.com"
+  smtp_server: "txsmtp.amd.com"
+  send: true
