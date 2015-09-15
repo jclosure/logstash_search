@@ -149,3 +149,6 @@ html
   end
   
 end
+
+# self running for now
+output = Emailer.new.run
