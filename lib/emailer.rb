@@ -102,8 +102,6 @@ html
       output[:html] = Slim::Template.new { template }.render(input, input)
     end
 
-    output[:html] = output[:html] || "no results"
-
     output
   end
 
@@ -120,7 +118,7 @@ html
     data = output[:data]
     word = output[:word]
 
-
+    unless html.nil?
       Pony.mail :to => @config['to'],
                 :from => @config['from'],
                 :subject => "time period report: #{word} in #{$environment}",
@@ -136,6 +134,7 @@ html
                   #:authentication => :plain, # :plain, :login, :cram_md5, no auth by default
                   #:domain         => "amd.com" # the HELO domain provided by the client to the server
                 }
+    end
   end
 
   def run
