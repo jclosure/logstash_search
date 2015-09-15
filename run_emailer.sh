@@ -28,5 +28,5 @@ PATH="/root/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
 
-ruby emailer.rb qa 1 ./config.yml
-ruby emailer.rb prod 1 ./config.yml
+ruby ./lib/emailer.rb qa 1 ./config.yml
+ruby ./lib/emailer.rb prod 1 ./config.yml
