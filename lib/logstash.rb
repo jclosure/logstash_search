@@ -18,13 +18,9 @@ class Logstash
   def self.query(params, size: 10000)
 
     es = params.es
-
-    binding.pry
     
     index_name = params[:index] || Logstash.generate_indices(params.starting, params.ending).join(",")
 
-    binding.pry
-    
     puts "searching index: #{index_name}"
     
     result = es.index(index_name).search(
