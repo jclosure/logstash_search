@@ -13,11 +13,11 @@ require_relative 'logstash'
 
 default_config_file = "config.yml"
 default_env = "qa"
-default_hours = 24
+default_hours = 12
 
 # initialize globals
 $env = $env || ARGV[0] || default_env
-$hours =  $hours || (ARGV[1] || default_hours).to_f
+$hours =  ($hours || ARGV[1] || default_hours).to_f
 $path_to_config = $path_to_config ||
                   ARGV[2] ||
                   if File.file?(default_config_file)
@@ -27,7 +27,6 @@ $path_to_config = $path_to_config ||
                     "../#{default_config_file}"
                   end
 
-binding.pry
 
 if $path_to_config.nil?
   raise 'no configuration file available...'
@@ -46,19 +45,19 @@ class Emailer
 
     @date_field_name = @config['date_field']
     @now = DateTime.now
-    @starting = (@now - ($hours/24)).to_time.iso8601.to_s #ref: see note
+
+    time_quotient = $hours.to_f / 24
+
+    @starting = (@now - time_quotient).to_time.iso8601.to_s #ref: see note
     @ending = @now.to_time.iso8601.to_s
 
     puts "start: #{@starting}"
     puts "end: #{@ending}"
 
-
-    
     @es = Stretcher::Server.new(@config['url'], {  
                                   :read_timeout => 2000,
                                   :open_timeout => 2000
                                 })
-
   end
   
   
