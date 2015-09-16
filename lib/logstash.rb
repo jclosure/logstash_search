@@ -1,74 +1,33 @@
+
+require 'date'
+require_relative 'extensions'
+
+
 class Logstash
 
-  
-  
-  def self.mquery(params, size: 10000)
+  def self.generate_indices(starting, ending)
 
-    #binding.pry
-    # use an alias
-    result = params[:es].msearch([{index: params[:index]},{index: params[:index2]},
-      {                   
-      # SNIP QUERY BEGIN
-      
-      "query": {
-        "filtered": {
-          "query": {
-            "bool": {
-              "should": [
-                {
-                  "query_string": {
-                    "query": params[:word]
-                  }
-                }
-              ]
-            }
-          },
-          "filter": {
-            "bool": {
-              "must": [
-               {
-                  "range": {
-                    "@timestamp": {
-                      "from": params[:starting],
-                      "to": params[:ending]
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      "size": params[:size],
-      "sort": [
-        {
-          "@timestamp": {
-            "order": "desc",
-            "ignore_unmapped": true
-          }
-        },
-        {
-          "@timestamp": {
-            "order": "desc",
-            "ignore_unmapped": true
-          }
-        }
-      ]
+    date_from  = DateTime.parse(starting)
+    date_to    = DateTime.parse(ending)
+    date_range = date_from..date_to
 
-      # SNIP QUERY END
-      }] 
-    )
-
-    result
+    date_days = date_range.map {|d| Date.new(d.year, d.month, d.day)}.uniq
+    date_days.map {|d| d.strftime "logstash-%Y.%m.%d"}
   end
-
-  
   
   def self.query(params, size: 10000)
 
-    #binding.pry
-    # use an alias
-    result = params[:es].index(params[:index]).search(
+    es = params.es
+
+    binding.pry
+    
+    index_name = params[:index] || Logstash.generate_indices(params.starting, params.ending).join(",")
+
+    binding.pry
+    
+    puts "searching index: #{index_name}"
+    
+    result = es.index(index_name).search(
 
       # SNIP QUERY BEGIN
       
@@ -101,14 +60,8 @@ class Logstash
           }
         }
       },
-      "size": params[:size],
+      "size": size,
       "sort": [
-        {
-          "@timestamp": {
-            "order": "desc",
-            "ignore_unmapped": true
-          }
-        },
         {
           "@timestamp": {
             "order": "desc",
@@ -117,8 +70,7 @@ class Logstash
         }
       ]
 
-      # SNIP QUERY END
-  
+      # SNIP QUERY END  
     )
 
     result
@@ -126,14 +78,14 @@ class Logstash
 
   
   # LOCAL SORT
-  def self.sort_by_date
+  def self.sort_by_date results, date_key
 
-    field_name = "@timestamp"
+    #date_key = "@timestamp"
     
-    entries.results.sort! do |a,b|
+    results.sort! do |a,b|
       begin
-        if a.key?(field_name) && b.key?(field_name) 
-          DateTime.parse(a[field_name]) <=> DateTime.parse(b[field_name])
+        if a.key?(date_key) && b.key?(date_key) 
+          DateTime.parse(a[date_key]) <=> DateTime.parse(b[date_key])
         else
           1
         end

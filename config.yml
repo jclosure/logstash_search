@@ -11,7 +11,9 @@ dev:
 qa:
   name: "QA"
   url : "http://esbanl01-qa.amd.com:9200"
-  index: "logstash-*"
+  # index: "logstash-*"
+  # index: "logstash-2015.09.*"
+  # index: "logstash-2015.09.14,logstash-2015.09.15"
   search: 'message:"*exception*"'
   date_field: "@timestamp"
   to: "joel.holder@amd.com"
@@ -21,12 +23,8 @@ qa:
 prod:
   name: "production"
   url : "http://esbanl01.amd.com:9200"  
-  index: "logstash-2015.09.*"
-  search: 'message:"*exception*"
-           AND -message:"*This exception will be ignored*" 
-           AND -message:"*EventAdmin: Exception: java.lang.InterruptedException*" 
-           AND -message:"*leaving main loop due to null*"                        
-           AND -message:"*leaving main loop due to Socket closed*"'
+#  index: "logstash-*"
+  search: 'message:"*exception*"'
   date_field: "@timestamp"
   to: "joel.holder@amd.com"
   from: "esbadmins@amd.com"

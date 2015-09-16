@@ -9,16 +9,34 @@ require 'date'
 require 'time'
 
 require_relative 'extensions'
+require_relative 'logstash'
 
+default_config_file = "config.yml"
+default_env = "qa"
+default_hours = 24
 
-$environment = $environment || ARGV[0] || "dev"
-$hours =  $hours || (ARGV[1] || 1).to_f
-$path_to_config = $path_to_config || ARGV[2] || '../config.yml'
+# initialize globals
+$env = $env || ARGV[0] || default_env
+$hours =  $hours || (ARGV[1] || default_hours).to_f
+$path_to_config = $path_to_config ||
+                  ARGV[2] ||
+                  if File.file?(default_config_file)
+                    default_config_file
+                  end ||
+                  if File.file?("../#{default_config_file}")
+                    "../#{default_config_file}"
+                  end
+
+binding.pry
+
+if $path_to_config.nil?
+  raise 'no configuration file available...'
+end
 
 class Emailer
 
   def self.config
-    YAML::load(IO.read($path_to_config))[$environment]
+    YAML::load(IO.read($path_to_config))[$env]
   end
 
   attr_accessor :config
@@ -41,34 +59,29 @@ class Emailer
                                   :open_timeout => 2000
                                 })
 
-    require_relative 'logstash'
-
   end
   
   
 
   # SEARCH
   def search
-
-    # year_month = DateTime.parse(@ending).to_time.strftime("%Y.%m.*")
-    # index_name = "logstash-#{year_month}"
-
-    index_name = "#{config['index']}*"
-
-    puts "searching index: #{index_name}"
     
     params = {
       :es => @es,
-      :index => index_name,
+      :index => @config['index'],
       :word => @config['search'],
       :starting => @starting,
       :ending => @ending,
       :size => 10000
     }
 
+    response = Logstash.query(params)
+    
+    puts "found: #{response.total} results"
+    
     {
       params: params,
-      response: Logstash.query(params)
+      response: response
     }
 
   end
@@ -81,21 +94,17 @@ class Emailer
 
     
     template = %q(
-doctype html
-html
-  head
-    meta charset="UTF-8"
-  body
-    h1= "#{response.total} entries matching “#{params[:word]}”"
-    ul
-      - response.results.each do |result|
-        hr
-        li= result.message
+        doctype html
+        html
+          head
+            meta charset="UTF-8"
+          body
+            h1= "#{response.total} entries matching “#{params[:word]}”"
+            ul
+              - response.results.each do |result|
+                hr
+                li= result.message
 )
-
-
-    # SEND EMAIL
-    puts "found: #{response.total} results"
 
     if  response.total > 0
       input = { params: params, response: response }
@@ -121,7 +130,7 @@ html
     unless html.nil?
       Pony.mail :to => @config['to'],
                 :from => @config['from'],
-                :subject => "time period report: #{word} in #{$environment}",
+                :subject => "time period report: #{word} in #{$env}",
                 :html_body => html,
                 :attachments => {"#{@config['name']}.html" => html, "#{@config['name']}.csv" => data},
                 :via => :smtp,
