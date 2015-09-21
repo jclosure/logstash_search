@@ -113,9 +113,9 @@ class Emailer
     output
   end
 
-  def generate_csv output
+  def generate_csv output, fields
     response = output[:response]
-    data = response.results.collect { |h| h.with("host","path","logdate","level","messagetext","category","contextId","thread","routeId", "breadcrumbId") || h }.to_hashed_csv
+    data = response.results.collect { |h| h.with(*fields) || h }.to_hashed_csv
     output[:data] = data
     output    
   end
@@ -129,9 +129,10 @@ class Emailer
     unless html.nil?
       Pony.mail :to => @config['to'],
                 :from => @config['from'],
-                :subject => "time period report: #{word} in #{$env}",
+                :subject => "time period report: #{word} in #{@config['name']}",
                 :html_body => html,
-                :attachments => {"#{@config['name']}.html" => html, "#{@config['name']}.csv" => data},
+                #:attachments => {"#{@config['name']}.html" => html, "#{@config['name']}.csv" => data},
+                :attachments => {"#{@config['name']}.csv" => data},
                 :via => :smtp,
                 :via_options => {
                   :address        => @config['smtp_server'],
@@ -148,7 +149,7 @@ class Emailer
   def run
 
     output = self.search
-    self.generate_csv output
+    self.generate_csv output, ["host","path","logdate","level","messagetext","category","contextId","thread","routeId","breadcrumbId"]
     self.render output
     self.send_email output
     output
