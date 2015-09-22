@@ -11,42 +11,19 @@ require 'time'
 require_relative 'extensions'
 require_relative 'logstash'
 
-default_config_file = "config.yml"
-default_env = "qa"
-default_hours = 12
-
-# initialize globals
-$env = $env || ARGV[0] || default_env
-$hours =  ($hours || ARGV[1] || default_hours).to_f
-$path_to_config = $path_to_config ||
-                  ARGV[2] ||
-                  if File.file?(default_config_file)
-                    default_config_file
-                  end ||
-                  if File.file?("../#{default_config_file}")
-                    "../#{default_config_file}"
-                  end
-
-
-if $path_to_config.nil?
-  raise 'no configuration file available...'
-end
 
 class Emailer
 
-  def self.config
-    YAML::load(IO.read($path_to_config))[$env]
-  end
 
   attr_accessor :config
   
-  def initialize
-    @config = Emailer.config
+  def initialize config
+    @config = config
 
     @date_field_name = @config['date_field']
     @now = DateTime.now
 
-    time_quotient = $hours.to_f / 24
+    time_quotient = @config['time_quotient'].to_f
 
     @starting = (@now - time_quotient).to_time.iso8601.to_s #ref: see note
     @ending = @now.to_time.iso8601.to_s
@@ -79,6 +56,7 @@ class Emailer
     puts "found: #{response.total} results"
     
     {
+      config: @config,
       params: params,
       response: response
     }
@@ -146,17 +124,51 @@ class Emailer
     end
   end
 
-  def run
 
-    output = self.search
-    self.generate_csv output, ["host","path","logdate","level","messagetext","category","contextId","thread","routeId","breadcrumbId"]
-    self.render output
-    self.send_email output
+  
+  def self.run config
+    emailer = self.new config
+    output = emailer.search
+    emailer.generate_csv output, config.fields
+                         
+    emailer.render output
+    emailer.send_email output
     output
-    
+  end
+
+
+  # self running class method
+  def self.main default_config_file: "config.yml",
+                default_env: "qa",
+                default_hours: 12
+
+    # initialize globals
+    env = env || ARGV[0] || default_env
+    hours =  (hours || ARGV[1] || default_hours).to_f
+    path_to_config = path_to_config ||
+                     ARGV[2] ||
+                     if File.file?(default_config_file)
+                       default_config_file
+                     end ||
+                     if File.file?("../#{default_config_file}")
+                       "../#{default_config_file}"
+                     end
+
+    # ensure config file
+    if path_to_config.nil?
+      raise 'no configuration file available...'
+    end
+
+    config = YAML::load(IO.read(path_to_config))[env]
+
+    config['time_quotient'] = hours.to_f / 24
+
+    config['fields'] = ["host","path","logdate","level","messagetext","category","contextId","thread","routeId","breadcrumbId"]
+
+    self.run config
   end
   
 end
 
-# self running for now
-output = Emailer.new.run
+Emailer.main
+
