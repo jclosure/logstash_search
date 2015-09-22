@@ -4,7 +4,7 @@ group :default do
   gem 'bundler'
   gem 'rack'
   gem 'stretcher'
-  gem 'pry'
+  gem 'pry-byebug'
   gem 'slim'
   gem 'faraday', '0.8.9'
   gem 'pony'

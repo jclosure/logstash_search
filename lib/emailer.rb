@@ -138,26 +138,24 @@ class Emailer
 
 
   # self running class method
-  def self.main default_config_file: "config.yml",
-                default_env: "qa",
-                default_hours: 12
+  def self.main(env = "dev",
+                hours = 1.0,
+                config_file = "config.yml")
 
     # initialize globals
-    env = env || ARGV[0] || default_env
-    hours =  (hours || ARGV[1] || default_hours).to_f
-    path_to_config = path_to_config ||
-                     ARGV[2] ||
-                     if File.file?(default_config_file)
-                       default_config_file
+    hours = hours.to_f 
+    path_to_config = if File.file?(config_file)
+                       config_file
                      end ||
-                     if File.file?("../#{default_config_file}")
-                       "../#{default_config_file}"
+                     if File.file?("../#{config_file}")
+                       "../#{config_file}"
                      end
-
+    
     # ensure config file
     if path_to_config.nil?
       raise 'no configuration file available...'
     end
+
 
     config = YAML::load(IO.read(path_to_config))[env]
 
@@ -170,5 +168,5 @@ class Emailer
   
 end
 
-Emailer.main
+
 

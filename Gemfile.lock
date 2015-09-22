@@ -1,7 +1,10 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    byebug (5.0.0)
+      columnize (= 0.9.0)
     coderay (1.1.0)
+    columnize (0.9.0)
     daemons (1.2.3)
     diff-lcs (1.2.5)
     eventmachine (1.0.8)
@@ -22,11 +25,18 @@ GEM
     multipart-post (1.2.0)
     pony (1.11)
       mail (>= 2.0)
+    pry (0.10.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     pry (0.10.1-x64-mingw32)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
       win32console (~> 1.3)
+    pry-byebug (3.2.0)
+      byebug (~> 5.0)
+      pry (~> 0.10)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -67,13 +77,14 @@ GEM
     win32console (1.3.2)
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES
   bundler
   faraday (= 0.8.9)
   pony
-  pry
+  pry-byebug
   rack
   rspec
   sinatra
@@ -82,4 +93,4 @@ DEPENDENCIES
   thin
 
 BUNDLED WITH
-   1.10.6
+   1.10.0
