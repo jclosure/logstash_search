@@ -4,6 +4,7 @@ dev:
   index: "twitter"
   search: "bye"
   date_field: "@timestamp"
+  fields: ["user","message"]
   to: "joel.holder@amd.com"
   from: "esbadmins@amd.com"
   smtp_server: "txsmtp.amd.com"
@@ -16,6 +17,7 @@ qa:
   # index: "logstash-2015.09.14,logstash-2015.09.15,foobar123"
   search: 'message:"*exception*"'
   date_field: "@timestamp"
+  fields: ["host","path","logdate","level","messagetext","category","contextId","thread","routeId","breadcrumbId"]  
   to: "joel.holder@amd.com"
   from: "esbadmins@amd.com"
   smtp_server: "txsmtp.amd.com"
@@ -25,6 +27,7 @@ prod:
   url : "http://esbanl01.amd.com:9200?ignore_unavailable=true"  
   # index: "logstash-*"
   search: 'message:"*exception*"'
+  fields: ["host","path","logdate","level","messagetext","category","contextId","thread","routeId","breadcrumbId"]
   date_field: "@timestamp"
   to: "joel.holder@amd.com"
   from: "esbadmins@amd.com"
