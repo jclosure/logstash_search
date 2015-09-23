@@ -5,19 +5,21 @@ require 'pry'
 
 file = ARGV.shift
 
-dir_path = File.expand_path File.dirname(__FILE__)
+project_root_path = File.expand_path("#{File.dirname(__FILE__)}/..")
 
 # go ahead and chdir to allow bundler loads to work
-Dir.chdir(dir_path)
+Dir.chdir(project_root_path)
 
-# move from bin to project lib
-Dir.chdir("../lib")
+project_lib_path = File.expand_path("#{project_root_path}/lib")
 
-project_path = Dir.pwd
+# setup load path
+$:.unshift(project_root_path) unless
+    $:.include?(project_root_path)
+$:.unshift(project_lib_path) unless
+    $:.include?(project_lib_path)
 
-file_path = File.expand_path(file, project_path)
 
-require file_path
+require file
 
 klass = eval(ARGV.shift)
 method = ARGV.shift.to_sym
