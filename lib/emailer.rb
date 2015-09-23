@@ -126,11 +126,12 @@ class Emailer
 
 
   
-  def self.run config
-    emailer = self.new config
+  def self.run env,
+               hours,
+               config = nil
+    emailer = self.new(config || self.configure(env, hours))
     output = emailer.search
     emailer.generate_csv output, config.fields
-                         
     emailer.render output
     emailer.send_email output
     output
@@ -138,9 +139,9 @@ class Emailer
 
 
   # self running class method
-  def self.configure(env = "dev",
-                hours = 1.0,
-                config_file = "config.yml")
+  def self.configure env = "dev",
+                     hours = 1.0,
+                     config_file = "config.yml"
 
     # initialize globals
     hours = hours.to_f 
