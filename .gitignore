@@ -1,2 +1,8 @@
 .bundle/
 vendor/
+bin/*
+!bin/*.rb
+!bin/*.sh
+!bin/*.bat
+!bin/*.cmd
+

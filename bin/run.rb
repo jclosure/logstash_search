@@ -10,6 +10,9 @@ dir_path = File.expand_path File.dirname(__FILE__)
 # go ahead and chdir to allow bundler loads to work
 Dir.chdir(dir_path)
 
+# move from bin to project lib
+Dir.chdir("../lib")
+
 file_path = File.expand_path(file, dir_path)
 
 require file_path

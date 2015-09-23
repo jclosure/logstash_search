@@ -40,9 +40,9 @@ class Emailer
   
 
   # SEARCH
-  def search
+  def search params = nil
     
-    params = {
+    params = params || {
       :es => @es,
       :index => @config['index'],
       :word => @config['search'],
@@ -138,7 +138,7 @@ class Emailer
 
 
   # self running class method
-  def self.main(env = "dev",
+  def self.configure(env = "dev",
                 hours = 1.0,
                 config_file = "config.yml")
 
@@ -161,9 +161,7 @@ class Emailer
 
     config['time_quotient'] = hours.to_f / 24
 
-    config['fields'] = ["host","path","logdate","level","messagetext","category","contextId","thread","routeId","breadcrumbId"]
-
-    self.run config
+    config
   end
   
 end

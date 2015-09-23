@@ -27,6 +27,7 @@ HOME=/root
 PATH="/root/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-./run.rb ./lib/emailer.rb Emailer main qa 1
-./run.rb ./lib/emailer.rb Emailer main prod 1
+
+./run.rb emailer.rb Emailer main qa 1
+./run.rb emailer.rb Emailer main prod 1
 
