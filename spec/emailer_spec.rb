@@ -1,6 +1,7 @@
 require 'emailer'
 
 # https://github.com/rspec/rspec-expectations
+# http://tutorials.jumpstartlab.com/topics/internal_testing/rspec_practices.html
 
 RSpec.describe Emailer, "searching" do
 
@@ -27,6 +28,9 @@ RSpec.describe Emailer, "searching" do
       expect(output.response).to be_truthy
     end
     it 'generates an html message' do
+
+    end
+    it 'generates data' do
 
     end
     it 'sends an email notification' do

@@ -13,7 +13,9 @@ Dir.chdir(dir_path)
 # move from bin to project lib
 Dir.chdir("../lib")
 
-file_path = File.expand_path(file, dir_path)
+project_path = Dir.pwd
+
+file_path = File.expand_path(file, project_path)
 
 require file_path
 
