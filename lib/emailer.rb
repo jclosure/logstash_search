@@ -129,7 +129,8 @@ class Emailer
   def self.run env,
                hours,
                config = nil
-    emailer = self.new(config || self.configure(env, hours))
+    config = config || self.configure(env, hours)
+    emailer = self.new config
     output = emailer.search
     emailer.generate_csv output, config.fields
     emailer.render output
