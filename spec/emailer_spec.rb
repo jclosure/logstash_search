@@ -4,16 +4,22 @@ require 'emailer'
 
 RSpec.describe Emailer, "searching" do
 
-  context 'when it gets configured' do
-    it 'defaults config to dev' do
+  context 'when configured' do
+    before :each do
       @config = Emailer.configure
+    end
+    it 'defaults dev environment' do
       expect(@config.name).to eq "development"
     end
+    
+    
   end
 
   context 'when there are results' do
-    it 'searches' do
-      binding.pry
+    before :each do
+      @config = Emailer.configure
+    end
+    it 'searches and returns output' do
       emailer = Emailer.new @config
       output = emailer.search
       expect(output.params).to be_truthy
