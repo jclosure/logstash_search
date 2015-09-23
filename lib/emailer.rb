@@ -33,7 +33,7 @@ class Emailer
 
     @es = Stretcher::Server.new(@config['url'], {  
                                   :read_timeout => 2000,
-                                  :open_timeout => 2000
+                                  :open_timeout => 20
                                 })
   end
   
@@ -51,6 +51,8 @@ class Emailer
       :size => 10000
     }
 
+    begin
+      
     response = Logstash.query(params)
     
     puts "found: #{response.total} results"
@@ -60,7 +62,11 @@ class Emailer
       params: params,
       response: response
     }
-
+    rescue Exception => e  
+      puts "SEARCH ERROR: #{e.message}"  
+      puts e.backtrace.inspect
+      raise e
+    end
   end
 
 
